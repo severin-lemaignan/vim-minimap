@@ -1,4 +1,4 @@
-function! ShowMinimap()
+function! minimap#ShowMinimap()
 python << EOF
 
 # vim-minimap is free software: you can redistribute it and/or modify

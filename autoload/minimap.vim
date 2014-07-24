@@ -243,9 +243,9 @@ vim.command("normal L")
 bottomline = src.cursor[0]
 
 
-
-vim.command(":botright vnew")
-vim.command(":set nonumber")
+vim.command(":botright vnew vim-minimap")
+# make the new buffer 'temporary'
+vim.command(":set nonumber | setlocal buftype=nofile | setlocal bufhidden=hide | setlocal noswapfile | set nobuflisted")
 
 minimap = vim.current.window
 
@@ -272,6 +272,9 @@ for line in range(len(src.buffer)):
 
 minimap.buffer[:] = draw(lengths)
 minimap.buffer[0] = "Visible: from %d to %d" % (topline, bottomline)
+
+# prevent any further modification
+#vim.command(":setlocal readonly")
 
 src.cursor = cursor
 vim.current.window = src

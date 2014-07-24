@@ -9,6 +9,13 @@ library](https://github.com/asciimoo/drawille) to 'draw' in text mode.
 ![Code minimap in Vim](minimap.png)
 
 **Attention**: this extension is not yet ready for general use! It simply
-displays the map when calling `ShowMinimap()`, but does not do anything useful
+displays the map when calling `Minimap`, but does not do anything useful
 yet, like highlight the visible part of the buffer or synchronizing scrolling.
+
+Installation
+------------
+
+With [vundle](https://github.com/gmarik/Vundle.vim), simply add: `Bundle
+'severin-lemaignan/vim-minimap'` to your `.vimrc` and run `BundleInstall` from
+vim.
 

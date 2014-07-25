@@ -279,10 +279,8 @@ def draw(lengths, startline = 0):
         for x in range(2 * min(int(l * HORIZ_SCALE), WIDTH)):
             c.set(x, y)
 
-    lines = c.frame().split('\n')
-
     # pad with spaces to ensure uniform block highligthing
-    return [unicode(line, "utf-8").ljust(WIDTH) for line in lines]
+    return [unicode(line, "utf-8").ljust(WIDTH) for line in c.rows()]
 
 lengths = []
 

@@ -265,7 +265,7 @@ if not minimap:
 
     minimap = vim.current.window
 
-    minimap.width = 20
+    minimap.width = WIDTH
 
     # fixed size
     vim.command(":set wfw")
@@ -282,7 +282,7 @@ def draw(lengths, startline = 0):
     lines = c.frame().split('\n')
 
     # pad with spaces to ensure uniform block highligthing
-    return [line.ljust(WIDTH) for line in lines]
+    return [unicode(line, "utf-8").ljust(WIDTH) for line in lines]
 
 lengths = []
 
@@ -291,7 +291,7 @@ for line in range(len(src.buffer)):
 
 
 minimap.buffer[:] = draw(lengths)
-vim.command("match WarningMsg /\%>0c\%<20c\%>{}l\%<{}l./".format(topline/4, bottomline/4 - 1))
+vim.command("match WarningMsg /\%>0v\%<{}v\%>{}l\%<{}l./".format(WIDTH, topline/4, bottomline/4 - 1))
 
 # prevent any further modification
 #vim.command(":setlocal readonly")

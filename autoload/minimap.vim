@@ -280,7 +280,7 @@ def draw(lengths, startline = 0):
             c.set(x, y)
 
     # pad with spaces to ensure uniform block highligthing
-    return [unicode(line, "utf-8").ljust(WIDTH) for line in c.rows()]
+    return [line.ljust(WIDTH) for line in c.rows()]
 
 lengths = []
 

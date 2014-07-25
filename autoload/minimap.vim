@@ -291,7 +291,7 @@ for line in range(len(src.buffer)):
 
 
 minimap.buffer[:] = draw(lengths)
-minimap.buffer[0] = "Visible: from %d to %d" % (topline, bottomline)
+vim.command("match WarningMsg /\%>0c\%<20c\%>{}l\%<{}l./".format(topline/4, bottomline/4 - 1))
 
 # prevent any further modification
 #vim.command(":setlocal readonly")

@@ -234,6 +234,11 @@ class Canvas(object):
 END OF DRAWILLE CODE
 """
 
+WIDTH = 20
+HORIZ_SCALE = 0.1
+
+MINIMAP = "vim-minimap"
+
 src = vim.current.window
 cursor = src.cursor
 
@@ -242,27 +247,42 @@ topline = src.cursor[0]
 vim.command("normal L")
 bottomline = src.cursor[0]
 
+minimap = None
 
-vim.command(":botright vnew vim-minimap")
-# make the new buffer 'temporary'
-vim.command(":set nonumber | setlocal buftype=nofile | setlocal bufhidden=hide | setlocal noswapfile | set nobuflisted")
+for b in vim.buffers:
+    if b.name.endswith(MINIMAP):
+        for w in vim.windows:
+            if w.buffer == b:
+                minimap = w
+                break
 
-minimap = vim.current.window
+if not minimap:
+    vim.command(":botright vnew vim-minimap")
+    # make the new buffer 'temporary'
+    vim.command(":setlocal buftype=nofile bufhidden=hide noswapfile nobuflisted")
+    # make ensure our buffer is uncluttered
+    vim.command(":setlocal nonumber nolist")
 
-WIDTH = 20
-minimap.width = 20
+    minimap = vim.current.window
 
-HORIZ_SCALE = 0.1
+    minimap.width = 20
 
-c = Canvas()
+    # fixed size
+    vim.command(":set wfw")
+
 
 def draw(lengths, startline = 0):
+
+    c = Canvas()
 
     for y, l in enumerate(lengths):
         for x in range(2 * min(int(l * HORIZ_SCALE), WIDTH)):
             c.set(x, y)
 
-    return c.frame().split('\n')
+    lines = c.frame().split('\n')
+
+    # pad with spaces to ensure uniform block highligthing
+    return [line.ljust(WIDTH) for line in lines]
 
 lengths = []
 

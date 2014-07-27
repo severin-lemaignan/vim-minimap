@@ -261,7 +261,7 @@ if not minimap:
     # make the new buffer 'temporary'
     vim.command(":setlocal buftype=nofile bufhidden=hide noswapfile nobuflisted")
     # make ensure our buffer is uncluttered
-    vim.command(":setlocal nonumber nolist")
+    vim.command(":setlocal nonumber norelativenumber nolist")
 
     minimap = vim.current.window
 

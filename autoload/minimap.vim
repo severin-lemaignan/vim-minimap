@@ -289,7 +289,7 @@ for line in range(len(src.buffer)):
 
 
 minimap.buffer[:] = draw(lengths)
-vim.command("match WarningMsg /\%>0v\%<{}v\%>{}l\%<{}l./".format(WIDTH, topline/4, bottomline/4 - 1))
+vim.command("match WarningMsg /\%>0v\%<{}v\%>{}l\%<{}l./".format(WIDTH, topline/4, bottomline/4 + 1))
 
 # prevent any further modification
 #vim.command(":setlocal readonly")

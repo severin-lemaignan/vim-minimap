@@ -1,6 +1,53 @@
 function! minimap#ShowMinimap()
 python << EOF
+import vim
 
+WIDTH = 20
+
+MINIMAP = "vim-minimap"
+
+minimap = None
+
+for b in vim.buffers:
+    if b.name.endswith(MINIMAP):
+        for w in vim.windows:
+            if w.buffer == b:
+                minimap = w
+                break
+
+# If the minimap window does not yet exist, create it
+if not minimap:
+    # Save the currently active window to restore it later
+    src = vim.current.window
+
+    vim.command(":botright vnew %s" % MINIMAP)
+    # make the new buffer 'temporary'
+    vim.command(":setlocal buftype=nofile bufhidden=wipe noswapfile nobuflisted")
+    # make ensure our buffer is uncluttered
+    vim.command(":setlocal nonumber norelativenumber nolist")
+
+    # Properly close the minimap when quitting VIM (ie, when minimap is the last remaining window
+    vim.command(":autocmd! WinEnter <buffer> if winnr('$') == 1|q|endif")
+
+    vim.command(':autocmd! CursorMoved,CursorMovedI,TextChanged,TextChangedI,WinEnter * MinimapUpdate')
+
+    minimap = vim.current.window
+
+    minimap.width = WIDTH
+
+    # fixed size
+    vim.command(":set wfw")
+
+    # Restore the active window
+    vim.current.window = src
+
+vim.command(":MinimapUpdate")
+
+EOF
+endfunction
+
+function! minimap#UpdateMinimap()
+python << EOF
 # vim-minimap is free software: you can redistribute it and/or modify
 # it under the terms of the GNU Affero General Public License as published by
 # the Free Software Foundation, either version 3 of the License, or
@@ -19,6 +66,7 @@ python << EOF
 
 
 import vim
+import math
 
 """
 START OF DRAWILLE CODE
@@ -233,9 +281,8 @@ class Canvas(object):
 """
 END OF DRAWILLE CODE
 """
-
-WIDTH = 20
 HORIZ_SCALE = 0.1
+WIDTH = 20
 
 MINIMAP = "vim-minimap"
 
@@ -256,22 +303,6 @@ for b in vim.buffers:
                 minimap = w
                 break
 
-if not minimap:
-    vim.command(":botright vnew vim-minimap")
-    # make the new buffer 'temporary'
-    vim.command(":setlocal buftype=nofile bufhidden=hide noswapfile nobuflisted")
-    # make ensure our buffer is uncluttered
-    vim.command(":setlocal nonumber norelativenumber nolist")
-    vim.command(':autocmd! QuitPre * close')
-
-    minimap = vim.current.window
-
-    minimap.width = WIDTH
-
-    # fixed size
-    vim.command(":set wfw")
-
-
 def draw(lengths, startline = 0):
 
     c = Canvas()
@@ -283,20 +314,52 @@ def draw(lengths, startline = 0):
     # pad with spaces to ensure uniform block highligthing
     return [line.ljust(WIDTH) for line in c.rows()]
 
-lengths = []
 
-for line in range(len(src.buffer)):
-    lengths.append(len(src.buffer[line]))
+if minimap:
+
+    vim.current.window = minimap
+
+    lengths = []
+
+    for line in range(len(src.buffer)):
+        lengths.append(len(src.buffer[line]))
 
 
-minimap.buffer[:] = draw(lengths)
-# Highlight the current visible zone
-vim.command("match WarningMsg /\%>0v\%<{}v\%>{}l\%<{}l./".format(WIDTH, topline/4, bottomline/4 - 1))
+    vim.command(":setlocal modifiable")
 
-# prevent any further modification
-#vim.command(":setlocal readonly")
+    minimap.buffer[:] = draw(lengths)
+    # Highlight the current visible zone
+    top = topline/4
+    bottom = bottomline/4 + 1
+    vim.command("match WarningMsg /\%>0v\%<{}v\%>{}l\%<{}l./".format(WIDTH+1, top, bottom))
 
-src.cursor = cursor
-vim.current.window = src
+    # prevent any further modification
+    vim.command(":setlocal nomodifiable")
+
+    vim.current.window = src
+    src.cursor = cursor
+
 EOF
 endfunction
+
+function! minimap#CloseMinimap()
+python << EOF
+import vim
+
+MINIMAP = "vim-minimap"
+
+
+for b in vim.buffers:
+    if b.name.endswith(MINIMAP):
+        for w in vim.windows:
+            if w.buffer == b:
+                src = vim.current.window
+                vim.current.window = w
+                vim.command(":quit!")
+                vim.current.window = src
+                break
+
+
+EOF
+endfunction
+

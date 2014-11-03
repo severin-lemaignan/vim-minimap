@@ -262,6 +262,7 @@ if not minimap:
     vim.command(":setlocal buftype=nofile bufhidden=hide noswapfile nobuflisted")
     # make ensure our buffer is uncluttered
     vim.command(":setlocal nonumber norelativenumber nolist")
+    vim.command(':autocmd! QuitPre * close')
 
     minimap = vim.current.window
 
@@ -289,6 +290,7 @@ for line in range(len(src.buffer)):
 
 
 minimap.buffer[:] = draw(lengths)
+# Highlight the current visible zone
 vim.command("match WarningMsg /\%>0v\%<{}v\%>{}l\%<{}l./".format(WIDTH, topline/4, bottomline/4 - 1))
 
 # prevent any further modification

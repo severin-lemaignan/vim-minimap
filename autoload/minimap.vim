@@ -29,7 +29,7 @@ if not minimap:
     # Properly close the minimap when quitting VIM (ie, when minimap is the last remaining window
     vim.command(":autocmd! WinEnter <buffer> if winnr('$') == 1|q|endif")
 
-    vim.command(':autocmd! CursorMoved,CursorMovedI,TextChanged,TextChangedI,WinEnter * MinimapUpdate')
+    vim.command(':autocmd! CursorMoved,CursorMovedI,TextChanged,TextChangedI,BufWinEnter * MinimapUpdate')
 
     minimap = vim.current.window
 

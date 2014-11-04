@@ -289,9 +289,9 @@ MINIMAP = "vim-minimap"
 src = vim.current.window
 cursor = src.cursor
 
-vim.command("normal H")
+vim.command("normal! H")
 topline = src.cursor[0]
-vim.command("normal L")
+vim.command("normal! L")
 bottomline = src.cursor[0]
 
 minimap = None
@@ -332,6 +332,15 @@ if minimap:
     top = topline/4
     bottom = bottomline/4 + 1
     vim.command("match WarningMsg /\%>0v\%<{}v\%>{}l\%<{}l./".format(WIDTH+1, top, bottom))
+
+    # center the highlighted zone
+    height = int(vim.eval("winheight(0)"))
+    # first, put the cursor at the top of the buffer
+    vim.command("normal! gg")
+    # then, jump so that the active zone is centered
+    if (top + (bottom - top)/2) > height/2:
+        jump = min( top + (bottom - top)/2 + height/2, len(minimap.buffer))
+        vim.command("normal! %dgg" % jump)
 
     # prevent any further modification
     vim.command(":setlocal nomodifiable")

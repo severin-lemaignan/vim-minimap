@@ -33,5 +33,7 @@ Note that this extension requires Vim with Python support.
 Usage
 -----
 
-Type `:Minimap` to display the minimap, `:MinimapClose` to hide it.
+`:Minimap` to show the minimap, `:MinimapClose` to hide it.
+
+Default mappings: `<Leader>mm` to display the minimap, `<Leader>mc` to close it.
 

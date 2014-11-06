@@ -37,3 +37,12 @@ Usage
 
 Default mappings: `<Leader>mm` to display the minimap, `<Leader>mc` to close it.
 
+Settings
+--------
+
+You can customize the color of the highlighting by setting the g:minimap\_highlight in your vimrc:
+
+let g:minimap\_highlight='Visual'
+
+Note: To find out which highlights are available on your vim installation use :hi to get the list.
+

@@ -24,8 +24,8 @@ Features
 Installation
 ------------
 
-With [vundle](https://github.com/gmarik/Vundle.vim), simply add: `Bundle
-'severin-lemaignan/vim-minimap'` to your `.vimrc` and run `BundleInstall` from
+With [vundle](https://github.com/gmarik/Vundle.vim), simply add: `Plugin
+'severin-lemaignan/vim-minimap'` to your `.vimrc` and run `:PluginInstall` from
 vim.
 
 Note that this extension requires Vim with Python support.

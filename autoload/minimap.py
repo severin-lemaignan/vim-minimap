@@ -67,7 +67,7 @@ def ShowMinimap():
         # Restore the active window
         vim.current.window = src
     
-    vim.command(":MinimapUpdate")
+    vim.command(":call minimap#UpdateMinimap()")
 
 def UpdateMinimap():
 

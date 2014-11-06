@@ -74,6 +74,7 @@ def UpdateMinimap():
     HORIZ_SCALE = 0.1
     
     src = vim.current.window
+    mode = vim.eval("mode()")
     cursor = src.cursor
     
     vim.command("normal! H")
@@ -118,7 +119,7 @@ def UpdateMinimap():
         # Highlight the current visible zone
         top = topline/4
         bottom = bottomline/4 + 1
-        vim.command("match WarningMsg /\%>0v\%<{}v\%>{}l\%<{}l./".format(WIDTH+1, top, bottom))
+        vim.command(":match WarningMsg /\%>0v\%<{}v\%>{}l\%<{}l./".format(WIDTH+1, top, bottom))
     
         # center the highlighted zone
         height = int(vim.eval("winheight(0)"))
@@ -133,6 +134,11 @@ def UpdateMinimap():
         vim.command(":setlocal nomodifiable")
     
         vim.current.window = src
+
+        # restore the current selection if we were in visual mode.
+        if mode in ('v', 'V', '\026'):
+            vim.command("normal! gv")
+         
         src.cursor = cursor
 
 

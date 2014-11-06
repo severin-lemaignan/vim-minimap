@@ -14,7 +14,14 @@
 " (C) 2014- by Séverin Lemaignan for the VIM integration, <severin@guakamole.org>
 " (C) 2014- by Adam Tauber for the Drawille part, <asciimoo@gmail.com>
 
+
+
 function! minimap#ShowMinimap()
+    " By default Highlight the current screen as a visual selection.
+    if !exists('g:minimap_highlight')
+        let g:minimap_highlight = 'Visual'
+    endif
+
     let python_module = fnameescape(globpath(&runtimepath, 'autoload/minimap.py'))
     exe 'pyfile ' . python_module
     python ShowMinimap()

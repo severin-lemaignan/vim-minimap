@@ -119,7 +119,7 @@ def UpdateMinimap():
         # Highlight the current visible zone
         top = topline/4
         bottom = bottomline/4 + 1
-        vim.command(":match WarningMsg /\%>0v\%<{}v\%>{}l\%<{}l./".format(WIDTH+1, top, bottom))
+        vim.command(":match Visual /\%>0v\%<{}v\%>{}l\%<{}l./".format(WIDTH+1, top, bottom))
     
         # center the highlighted zone
         height = int(vim.eval("winheight(0)"))

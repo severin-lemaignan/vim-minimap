@@ -24,14 +24,14 @@ function! minimap#ShowMinimap()
 
     let python_module = fnameescape(globpath(&runtimepath, 'autoload/minimap.py'))
     exe 'pyfile ' . python_module
-    python ShowMinimap()
+    python showminimap()
 endfunction
 
 function! minimap#UpdateMinimap()
-    python UpdateMinimap()
+    python updateminimap()
 endfunction
 
 function! minimap#CloseMinimap()
-    python CloseMinimap()
+    python closeminimap()
 endfunction
 

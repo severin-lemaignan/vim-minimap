@@ -100,7 +100,7 @@ def UpdateMinimap():
                 c.set(x, y)
     
         # pad with spaces to ensure uniform block highligthing
-        return [line.ljust(WIDTH) for line in c.rows()]
+        return [line.ljust(WIDTH, u'\u00A0') for line in c.rows()]
     
     
     if minimap:

@@ -78,8 +78,6 @@ def updateminimap():
     vim.command("normal! L")
     bottomline = src.cursor[0]
 
-    minimap = is_minimap_open()
-
 
     def draw(lengths, startline=0):
 
@@ -93,6 +91,7 @@ def updateminimap():
         return [unicode(line).ljust(WIDTH, u'\u00A0') for line in c.rows()]
 
 
+    minimap = is_minimap_open()
     if minimap:
 
         vim.current.window = minimap
@@ -127,7 +126,9 @@ def updateminimap():
         # restore the current selection if we were in visual mode.
         if mode in ('v', 'V', '\026'):
             vim.command("normal! gv")
+        src.cursor = cursor
 
+    if not minimap:
         src.cursor = cursor
 
 
@@ -154,7 +155,6 @@ def toggleminimap():
         closeminimap()
     else:
         showminimap()
-
 
 
 

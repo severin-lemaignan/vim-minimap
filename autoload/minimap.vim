@@ -22,8 +22,7 @@ function! minimap#ShowMinimap()
         let g:minimap_highlight = 'Visual'
     endif
 
-    " let python_module = fnameescape(globpath(&runtimepath, 'autoload/minimap.py'))
-    let python_module = '~/.vim/bundle/vim-minimap/autoload/minimap.py'
+    let python_module = fnameescape(split(globpath(&runtimepath, 'autoload/minimap.py'), '\n')[0])
     exe "pyfile " . python_module
     python showminimap()
 endfunction
@@ -42,12 +41,7 @@ function! minimap#ToggleMinimap()
         let g:minimap_highlight = 'Visual'
     endif
 
-    let python_module = fnameescape(globpath(&runtimepath, 'autoload/minimap.py'))
-    " -> string error! strings return with uneven quotes for some reason
-	" -> execfile('/Users/peitalin/.vim/bundle/vim-minimap/autoload/minimap.py
-	" -> SyntaxError: EOL while scanning string literal
-	" => Work around:
-    let python_module = '~/.vim/bundle/vim-minimap/autoload/minimap.py'
+    let python_module = fnameescape(split(globpath(&runtimepath, 'autoload/minimap.py'), '\n')[0])
     exe "pyfile " . python_module
     python toggleminimap()
 endfunction

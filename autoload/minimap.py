@@ -35,15 +35,8 @@ MINIMAP = "vim-minimap"
 
 
 def showminimap():
-    minimap = None
 
-    for b in vim.buffers:
-        if b.name.endswith(MINIMAP):
-            for w in vim.windows:
-                if w.buffer == b:
-                    minimap = w
-                    break
-
+    minimap = is_minimap_open()
     # If the minimap window does not yet exist, create it
     if not minimap:
         # Save the currently active window to restore it later
@@ -85,14 +78,8 @@ def updateminimap():
     vim.command("normal! L")
     bottomline = src.cursor[0]
 
-    minimap = None
+    minimap = is_minimap_open()
 
-    for b in vim.buffers:
-        if b.name.endswith(MINIMAP):
-            for w in vim.windows:
-                if w.buffer == b:
-                    minimap = w
-                    break
 
     def draw(lengths, startline=0):
 
@@ -145,13 +132,32 @@ def updateminimap():
 
 
 def closeminimap():
+    w = is_minimap_open()
+    if w:
+        src = vim.current.window
+        vim.current.window = w
+        vim.command(":quit!")
+        vim.current.window = src
+
+
+def is_minimap_open():
+    "Returns vim window buffer if True, else None"
+    # Globals: `vim`, `MINIMAP`
     for b in vim.buffers:
         if b.name.endswith(MINIMAP):
             for w in vim.windows:
                 if w.buffer == b:
-                    src = vim.current.window
-                    vim.current.window = w
-                    vim.command(":quit!")
-                    vim.current.window = src
-                    break
+                    return w
+
+def toggleminimap():
+    if is_minimap_open():
+        closeminimap()
+    else:
+        showminimap()
+
+
+
+
+
+
 

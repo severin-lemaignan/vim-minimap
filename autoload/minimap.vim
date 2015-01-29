@@ -18,12 +18,13 @@
 
 function! minimap#ShowMinimap()
     " By default Highlight the current screen as a visual selection.
-    if !exists('g:minimap_highlight')
+    if !exists("g:minimap_highlight")
         let g:minimap_highlight = 'Visual'
     endif
 
-    let python_module = fnameescape(globpath(&runtimepath, 'autoload/minimap.py'))
-    exe 'pyfile ' . python_module
+    " let python_module = fnameescape(globpath(&runtimepath, "autoload/minimap.py"))
+    let python_module = '/Users/peitalin/.vim/bundle/vim-minimap/autoload/minimap.py'
+    exe "pyfile " . python_module
     python showminimap()
 endfunction
 
@@ -33,5 +34,17 @@ endfunction
 
 function! minimap#CloseMinimap()
     python closeminimap()
+endfunction
+
+function! minimap#ToggleMinimap()
+    " By default Highlight the current screen as a visual selection.
+    if !exists("g:minimap_highlight")
+        let g:minimap_highlight = 'Visual'
+    endif
+
+    " let python_module = fnameescape(globpath(&runtimepath, "autoload/minimap.py"))
+    let python_module = '/Users/peitalin/.vim/bundle/vim-minimap/autoload/minimap.py'
+    exe "pyfile " . python_module
+    python toggleminimap()
 endfunction
 

@@ -54,6 +54,8 @@ def showminimap():
         vim.command(":setlocal buftype=nofile bufhidden=wipe noswapfile nobuflisted")
         # make ensure our buffer is uncluttered
         vim.command(":setlocal nonumber norelativenumber nolist")
+        #make sure the buffer doesn't wrap.
+        vim.command(":setlocal nowrap")
 
         # Properly close the minimap when quitting VIM (ie, when minimap is the last remaining window
         vim.command(":autocmd! WinEnter <buffer> if winnr('$') == 1|q|endif")

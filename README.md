@@ -37,6 +37,9 @@ Usage
 
 Default mappings: `<Leader>mm` to display the minimap, `<Leader>mc` to close it.
 
+Or you can bind a key to the `:MinimapToggle` setting:
+nnoremap <F12> :MinimapToggle<CR>
+
 Settings
 --------
 

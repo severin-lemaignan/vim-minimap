@@ -8,6 +8,7 @@ let loaded_minimap = 1
 command! Minimap call minimap#ShowMinimap()
 command! MinimapClose call minimap#CloseMinimap()
 command! MinimapUpdate call minimap#UpdateMinimap()
+command! MinimapToggle call minimap#ToggleMinimap()
 
 map <Leader>mm :Minimap<CR>
 map <Leader>mu :MinimapUpdate<CR>

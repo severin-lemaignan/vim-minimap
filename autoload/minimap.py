@@ -94,12 +94,11 @@ def showminimap():
 
     vim.command(":call minimap#UpdateMinimap()")
 
-
 def updateminimap():
     minimap = getmmwindow()
     src = vim.current.window
 
-    HORIZ_SCALE = 0.1
+    HORIZ_SCALE = 0.2
 
 
     if not hasattr(src, 'buffer'):
@@ -139,13 +138,15 @@ def updateminimap():
         vim.command("normal! L")
         bottomline = src.cursor[0]
 
-        def draw(lengths, startline=0):
+        def draw(lengths,indents, startline=0):
 
             c = Canvas()
 
             for y, l in enumerate(lengths):
+                indent = int(indents[y] * HORIZ_SCALE)
                 for x in range(2 * min(int(l * HORIZ_SCALE), WIDTH)):
-                    c.set(x, y)
+                    if(x>=indent):
+                        c.set(x, y)
 
             # pad with spaces to ensure uniform block highlighting
             return [unicode(line).ljust(WIDTH, u'\u00A0') for line in c.rows()]
@@ -155,13 +156,16 @@ def updateminimap():
             vim.current.window = minimap
             highlight_group = vim.eval("g:minimap_highlight")
             lengths = []
+            indents = []
 
             for line in range(len(src.buffer)):
-                lengths.append(len(src.buffer[line]))
+                linestring = src.buffer[line]
+                indents.append(len(linestring) - len(linestring.lstrip()))
+                lengths.append(len(linestring))
 
             vim.command(":setlocal modifiable")
 
-            minimap.buffer[:] = draw(lengths)
+            minimap.buffer[:] = draw(lengths,indents)
             # Highlight the current visible zone
             top = topline / 4
             bottom = bottomline / 4 + 1
@@ -186,7 +190,6 @@ def updateminimap():
                 vim.command("normal! gv")
 
             src.cursor = cursor
-
 
 def closeminimap():
     minimap = getmmwindow()

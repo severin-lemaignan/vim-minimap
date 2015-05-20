@@ -14,9 +14,7 @@
 " (C) 2014- by Séverin Lemaignan for the VIM integration, <severin@guakamole.org>
 " (C) 2014- by Adam Tauber for the Drawille part, <asciimoo@gmail.com>
 
-
-
-function! minimap#ShowMinimap()
+if has('python')
     " By default Highlight the current screen as a visual selection.
     if !exists('g:minimap_highlight')
         let g:minimap_highlight = 'Visual'
@@ -24,6 +22,9 @@ function! minimap#ShowMinimap()
 
     let python_module = fnameescape(globpath(&runtimepath, 'autoload/minimap.py'))
     exe 'pyfile ' . python_module
+end
+
+function! minimap#ShowMinimap()
     python showminimap()
 endfunction
 
@@ -33,5 +34,9 @@ endfunction
 
 function! minimap#CloseMinimap()
     python closeminimap()
+endfunction
+
+function! minimap#ToggleMinimap()
+    python toggleminimap()
 endfunction
 

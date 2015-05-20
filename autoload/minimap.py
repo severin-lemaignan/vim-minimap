@@ -41,6 +41,14 @@ def getmmwindow():
                     return w
     return None
 
+def getmainwindow():
+    for b in vim.buffers:
+        if not b.name.endswith(MINIMAP) and not "NERD_tree" in b.name:
+            for w in vim.windows:
+                if w.buffer == b:
+                    return w
+    return None
+
 def setmmautocmd(clear = False):
     vim.command(":augroup minimap_group")
     vim.command(":autocmd!")
@@ -91,9 +99,38 @@ def updateminimap():
     minimap = getmmwindow()
     src = vim.current.window
 
-    if src.buffer != minimap.buffer:
+    HORIZ_SCALE = 0.1
 
-        HORIZ_SCALE = 0.1
+
+    if not hasattr(src, 'buffer'):
+        return
+
+    # Ignore NERD_tree Buffers
+    # TODO make configurable
+    if "NERD_tree" in src.buffer.name:
+         return
+
+    if minimap and src.buffer == minimap.buffer:
+
+         mainwindow = getmainwindow()
+         if mainwindow is None:
+             return
+
+         if src.buffer != mainwindow.buffer:
+             position_in_minimap = src.cursor[0]
+
+             ratio =  float(len(minimap.buffer)) / float(len(mainwindow.buffer))
+
+             new_position = int(float(position_in_minimap) / ratio)
+             if new_position > len(mainwindow.buffer):
+                 new_position = len(mainwindow.buffer)
+
+             mainwindow.cursor = (new_position, 0) # move to top left
+             vim.current.window = mainwindow
+             updateminimap()
+
+    if minimap and src.buffer != minimap.buffer:
+
         mode = vim.eval("mode()")
         cursor = src.cursor
 

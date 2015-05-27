@@ -7,6 +7,7 @@ The Sublime text-editor can display an useful overview of the code as a
 We can implement the same thing in Vim, relying on the [Drawille
 library](https://github.com/asciimoo/drawille) to 'draw' in text mode.
 
+![minimap in action](http://picdrop.t3lab.com/qqpdtsbTow.gif)
 ![Code minimap in Vim](minimap.png)
 
 

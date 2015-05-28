@@ -8,11 +8,9 @@ We can implement the same thing in Vim, relying on the [Drawille
 library](https://github.com/asciimoo/drawille) to 'draw' in text mode.
 
 ![minimap in action](http://picdrop.t3lab.com/qqpdtsbTow.gif)
-![Code minimap in Vim](minimap.png)
 
-
-**Attention**: this extension is not yet ready for general use! Only a few
-features are implemented and it's likely full of bugs. Patches welcome!
+**Attention**: this extension is not yet ready for general use! It's 
+likely full of bugs. Patches welcome!
 
 Features
 --------
@@ -25,11 +23,22 @@ Features
 Installation
 ------------
 
+Note that this extension requires Vim with Python support.
+
+### Vundle
+
 With [vundle](https://github.com/gmarik/Vundle.vim), simply add: `Plugin
 'severin-lemaignan/vim-minimap'` to your `.vimrc` and run `:PluginInstall` from
 vim.
 
-Note that this extension requires Vim with Python support.
+### Janus
+
+With Janus just clone inside ```.janus```.
+
+```
+cd ~/.janus
+git clone https://github.com/severin-lemaignan/vim-minimap.git vim-minimap
+```
 
 Usage
 -----

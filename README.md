@@ -56,3 +56,19 @@ You can customize the color of the highlighting by setting `g:minimap_highlight`
 
 Note: To find out which highlights are available on your vim installation use :hi to get the list.
 
+Troubleshooting
+---------------
+
+- Weird display
+
+Certain fonts do not display plain dots and empty spaces, but
+plain dots and circles for braille characters. As a result, you may want to use
+any other font that display braille characters in a way that suit the minimap
+plugin, like `Ubuntu Mono`, or `Droid Sans Mono`.
+
+For example, with `Inconsolata`:
+![image](https://cloud.githubusercontent.com/assets/7250745/8083430/c48e5c44-0f84-11e5-9cba-20d7e2eac0c5.png)
+
+With `Ubuntu Mono`
+![image](https://cloud.githubusercontent.com/assets/7250745/8083436/d4aaf9d4-0f84-11e5-9383-cb02bba384bc.png)
+

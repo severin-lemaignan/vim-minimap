@@ -9,9 +9,6 @@ library](https://github.com/asciimoo/drawille) to 'draw' in text mode.
 
 ![minimap in action](http://picdrop.t3lab.com/qqpdtsbTow.gif)
 
-**Attention**: this extension is not yet ready for general use! It's 
-likely full of bugs. Patches welcome!
-
 Features
 --------
 

@@ -33,16 +33,40 @@ from drawille import *
 WIDTH = 20
 MINIMAP = "vim-minimap"
 
-
-def showminimap():
-    minimap = None
-
+def getmmwindow():
     for b in vim.buffers:
         if b.name.endswith(MINIMAP):
             for w in vim.windows:
                 if w.buffer == b:
-                    minimap = w
-                    break
+                    return w
+    return None
+
+def getmainwindow():
+    for b in vim.buffers:
+        if not b.name.endswith(MINIMAP) and not "NERD_tree" in b.name:
+            for w in vim.windows:
+                if w.buffer == b:
+                    return w
+    return None
+
+def setmmautocmd(clear = False):
+    vim.command(":augroup minimap_group")
+    vim.command(":autocmd!")
+    if not clear:
+        # Properly close the minimap when quitting VIM (ie, when minimap is the last remaining window
+        vim.command(":autocmd WinEnter <buffer> if winnr('$') == 1|q|endif")
+        vim.command(':autocmd CursorMoved,CursorMovedI,TextChanged,TextChangedI,BufWinEnter * MinimapUpdate')
+    vim.command(":augroup END")
+
+def toggleminimap():
+    minimap = getmmwindow()
+    if minimap:
+        closeminimap()
+    else:
+        showminimap()
+
+def showminimap():
+    minimap = getmmwindow()
 
     # If the minimap window does not yet exist, create it
     if not minimap:
@@ -54,13 +78,9 @@ def showminimap():
         vim.command(":setlocal buftype=nofile bufhidden=wipe noswapfile nobuflisted")
         # make ensure our buffer is uncluttered
         vim.command(":setlocal nonumber norelativenumber nolist")
-        #make sure the buffer doesn't wrap.
-        vim.command(":setlocal nowrap")
 
-        # Properly close the minimap when quitting VIM (ie, when minimap is the last remaining window
-        vim.command(":autocmd! WinEnter <buffer> if winnr('$') == 1|q|endif")
-
-        vim.command(':autocmd! CursorMoved,CursorMovedI,TextChanged,TextChangedI,BufWinEnter * MinimapUpdate')
+        # set all autocmds in a group
+        setmmautocmd()
 
         minimap = vim.current.window
 
@@ -74,86 +94,115 @@ def showminimap():
 
     vim.command(":call minimap#UpdateMinimap()")
 
-
 def updateminimap():
-    HORIZ_SCALE = 0.1
-
+    minimap = getmmwindow()
     src = vim.current.window
-    mode = vim.eval("mode()")
-    cursor = src.cursor
 
-    vim.command("normal! H")
-    topline = src.cursor[0]
-    vim.command("normal! L")
-    bottomline = src.cursor[0]
-
-    minimap = None
-
-    for b in vim.buffers:
-        if b.name.endswith(MINIMAP):
-            for w in vim.windows:
-                if w.buffer == b:
-                    minimap = w
-                    break
-
-    def draw(lengths, startline=0):
-
-        c = Canvas()
-
-        for y, l in enumerate(lengths):
-            for x in range(2 * min(int(l * HORIZ_SCALE), WIDTH)):
-                c.set(x, y)
-
-        # pad with spaces to ensure uniform block highlighting
-        return [unicode(line).ljust(WIDTH, u'\u00A0') for line in c.rows()]
+    HORIZ_SCALE = 0.2
 
 
-    if minimap:
+    if not hasattr(src, 'buffer'):
+        return
 
-        vim.current.window = minimap
-        highlight_group = vim.eval("g:minimap_highlight")
-        lengths = []
+    # Ignore NERD_tree Buffers
+    # TODO make configurable
+    if "NERD_tree" in src.buffer.name:
+         return
 
-        for line in range(len(src.buffer)):
-            lengths.append(len(src.buffer[line]))
+    if minimap and src.buffer == minimap.buffer:
 
-        vim.command(":setlocal modifiable")
+         mainwindow = getmainwindow()
+         if mainwindow is None:
+             return
 
-        minimap.buffer[:] = draw(lengths)
-        # Highlight the current visible zone
-        top = topline / 4
-        bottom = bottomline / 4 + 1
-        vim.command("match " + highlight_group + " /\%>0v\%<{}v\%>{}l\%<{}l./".format(WIDTH + 1, top, bottom))
+         if src.buffer != mainwindow.buffer:
+             position_in_minimap = src.cursor[0]
 
-        # center the highlighted zone
-        height = int(vim.eval("winheight(0)"))
-        # first, put the cursor at the top of the buffer
-        vim.command("normal! gg")
-        # then, jump so that the active zone is centered
-        if (top + (bottom - top) / 2) > height / 2:
-            jump = min(top + (bottom - top) / 2 + height / 2, len(minimap.buffer))
-            vim.command("normal! %dgg" % jump)
+             ratio =  float(len(minimap.buffer)) / float(len(mainwindow.buffer))
 
-        # prevent any further modification
-        vim.command(":setlocal nomodifiable")
+             new_position = int(float(position_in_minimap) / ratio)
+             if new_position > len(mainwindow.buffer):
+                 new_position = len(mainwindow.buffer)
 
-        vim.current.window = src
+             mainwindow.cursor = (new_position, 0) # move to top left
+             vim.current.window = mainwindow
+             updateminimap()
 
-        # restore the current selection if we were in visual mode.
-        if mode in ('v', 'V', '\026'):
-            vim.command("normal! gv")
+    if minimap and src.buffer != minimap.buffer:
 
-        src.cursor = cursor
+        mode = vim.eval("mode()")
+        cursor = src.cursor
 
+        vim.command("normal! H")
+        topline = src.cursor[0]
+        vim.command("normal! L")
+        bottomline = src.cursor[0]
+
+        def draw(lengths,indents, startline=0):
+
+            c = Canvas()
+
+            for y, l in enumerate(lengths):
+                indent = int(indents[y] * HORIZ_SCALE)
+                for x in range(2 * min(int(l * HORIZ_SCALE), WIDTH)):
+                    if(x>=indent):
+                        c.set(x, y)
+
+            # pad with spaces to ensure uniform block highlighting
+            return [unicode(line).ljust(WIDTH, u'\u00A0') for line in c.rows()]
+
+        if minimap:
+
+            vim.current.window = minimap
+            highlight_group = vim.eval("g:minimap_highlight")
+            lengths = []
+            indents = []
+
+            for line in range(len(src.buffer)):
+                linestring = src.buffer[line]
+                indents.append(len(linestring) - len(linestring.lstrip()))
+                lengths.append(len(linestring))
+
+            vim.command(":setlocal modifiable")
+
+            minimap.buffer[:] = draw(lengths,indents)
+            # Highlight the current visible zone
+            top = topline / 4
+            bottom = bottomline / 4 + 1
+            vim.command("match " + highlight_group + " /\%>0v\%<{}v\%>{}l\%<{}l./".format(WIDTH + 1, top, bottom))
+
+            # center the highlighted zone
+            height = int(vim.eval("winheight(0)"))
+            # first, put the cursor at the top of the buffer
+            vim.command("normal! gg")
+            # then, jump so that the active zone is centered
+            if (top + (bottom - top) / 2) > height / 2:
+                jump = min(top + (bottom - top) / 2 + height / 2, len(minimap.buffer))
+                vim.command("normal! %dgg" % jump)
+
+            # prevent any further modification
+            vim.command(":setlocal nomodifiable")
+
+            vim.current.window = src
+
+            # restore the current selection if we were in visual mode.
+            if mode in ('v', 'V', '\026'):
+                vim.command("normal! gv")
+
+            src.cursor = cursor
 
 def closeminimap():
-    for b in vim.buffers:
-        if b.name.endswith(MINIMAP):
-            for w in vim.windows:
-                if w.buffer == b:
-                    src = vim.current.window
-                    vim.current.window = w
-                    vim.command(":quit!")
-                    vim.current.window = src
-                    break
+    minimap = getmmwindow()
+    src = vim.current.window
+    if minimap:
+        vim.current.window = minimap
+        # clear the minimap autocmds
+        setmmautocmd(True)
+        vim.command(":quit!")
+        # try the last window, but sometimes this one was already closed
+        # (ex. tagbar toggle) which will lead to an exception
+        try:
+            vim.current.window = src
+        except:
+            vim.current.window = vim.windows[0]
 

@@ -1,4 +1,4 @@
-# -*- coding: utf-8 -*-
+# -* coding: utf-8 -*-
 # vim-minimap is free software: you can redistribute it and/or modify
 # it under the terms of the GNU Affero General Public License as published by
 # the Free Software Foundation, either version 3 of the License, or
@@ -17,6 +17,7 @@
 
 import os
 import sys
+PY3 = sys.version_info[0] == 3
 
 import vim
 
@@ -66,6 +67,7 @@ def toggleminimap():
         showminimap()
 
 def showminimap():
+    
     minimap = getmmwindow()
 
     # If the minimap window does not yet exist, create it
@@ -149,7 +151,10 @@ def updateminimap():
                         c.set(x, y)
 
             # pad with spaces to ensure uniform block highlighting
-            return [unicode(line).ljust(WIDTH, u'\u00A0') for line in c.rows()]
+            if PY3:
+                return [line.ljust(WIDTH, u'\u00A0') for line in c.rows()]
+            else:
+                return [unicode(line).ljust(WIDTH, u'\u00A0') for line in c.rows()]
 
         if minimap:
 
@@ -167,8 +172,8 @@ def updateminimap():
 
             minimap.buffer[:] = draw(lengths,indents)
             # Highlight the current visible zone
-            top = topline / 4
-            bottom = bottomline / 4 + 1
+            top = round(topline / 4)
+            bottom = round(bottomline / 4 + 1)
             vim.command("match " + highlight_group + " /\%>0v\%<{}v\%>{}l\%<{}l./".format(WIDTH + 1, top, bottom))
 
             # center the highlighted zone

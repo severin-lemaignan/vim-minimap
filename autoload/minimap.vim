@@ -14,29 +14,49 @@
 " (C) 2014- by Séverin Lemaignan for the VIM integration, <severin@guakamole.org>
 " (C) 2014- by Adam Tauber for the Drawille part, <asciimoo@gmail.com>
 
-if has('python')
+if has('python') || has('python3')
     " By default Highlight the current screen as a visual selection.
     if !exists('g:minimap_highlight')
         let g:minimap_highlight = 'Visual'
     endif
 
     let python_module = fnameescape(globpath(&runtimepath, 'autoload/minimap.py'))
-    exe 'pyfile ' . python_module
+    if has('python')
+        exe 'pyfile ' . python_module
+    elseif has('python3')
+        exe 'py3file ' . python_module
+    endif
 end
 
 function! minimap#ShowMinimap()
-    python showminimap()
+    if has('python')
+        python showminimap()
+    elseif has('python3')
+        python3 showminimap()
+    endif
 endfunction
 
 function! minimap#UpdateMinimap()
-    python updateminimap()
+    if has('python')
+        python updateminimap()
+    elseif has('python3')
+        python3 updateminimap()
+    endif
 endfunction
 
 function! minimap#CloseMinimap()
-    python closeminimap()
+    if has('python')
+        python closeminimap()
+    elseif has('python3')
+        python3 closeminimap()
+    endif
 endfunction
 
 function! minimap#ToggleMinimap()
-    python toggleminimap()
+    if has('python')
+        python toggleminimap()
+    elseif has('python3')
+        python3 toggleminimap()
+    endif
 endfunction
 

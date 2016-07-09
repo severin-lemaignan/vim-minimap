@@ -172,9 +172,10 @@ def updateminimap():
 
             minimap.buffer[:] = draw(lengths,indents)
             # Highlight the current visible zone
-            top = round(topline / 4)
-            bottom = round(bottomline / 4 + 1)
-            vim.command("match " + highlight_group + " /\%>0v\%<{0}v\%>{1}l\%<{2}l./".format(WIDTH + 1, top, bottom))
+            top = int(topline / 4)
+            bottom = int(bottomline / 4 + 1)
+            vim.command("match {0} /\\%>0v\\%<{1}v\\%>{2}l\\%<{3}l./".format(
+                highlight_group, WIDTH + 1, top, bottom))
 
             # center the highlighted zone
             height = int(vim.eval("winheight(0)"))

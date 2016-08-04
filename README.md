@@ -9,6 +9,9 @@ library](https://github.com/asciimoo/drawille) to 'draw' in text mode.
 
 ![minimap in action](http://picdrop.t3lab.com/qqpdtsbTow.gif)
 
+This code is made available under a MIT license. See [LICENSE](LICENSE) for
+details.
+
 Features
 --------
 

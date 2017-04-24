@@ -163,7 +163,9 @@ def updateminimap():
             lengths = []
             indents = []
 
-            for line in range(len(src.buffer)):
+            first = max(1, topline - 80)
+            last = min(bottomline + 80, len(src.buffer))
+            for line in range(first, last):
                 linestring = src.buffer[line]
                 indents.append(len(linestring) - len(linestring.lstrip()))
                 lengths.append(len(linestring))
@@ -172,8 +174,8 @@ def updateminimap():
 
             minimap.buffer[:] = draw(lengths,indents)
             # Highlight the current visible zone
-            top = int(topline / 4)
-            bottom = int(bottomline / 4 + 1)
+            top = int((topline - first) / 4)
+            bottom = int((bottomline -first)/ 4 + 1)
             vim.command("match {0} /\\%>0v\\%<{1}v\\%>{2}l\\%<{3}l./".format(
                 highlight_group, WIDTH + 1, top, bottom))
 

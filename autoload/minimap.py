@@ -79,7 +79,7 @@ def showminimap():
         # make the new buffer 'temporary'
         vim.command(":setlocal buftype=nofile bufhidden=wipe noswapfile nobuflisted")
         # make ensure our buffer is uncluttered
-        vim.command(":setlocal nonumber norelativenumber nolist")
+        vim.command(":setlocal nonumber norelativenumber nolist nospell")
 
         # set all autocmds in a group
         setmmautocmd()

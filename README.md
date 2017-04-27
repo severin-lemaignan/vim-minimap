@@ -47,7 +47,7 @@ Usage
 
 Default mappings: `<Leader>mm` to display the minimap, `<Leader>mc` to close it.
 
-To overwrite the default keybindings, using following settings in ``.vimrc'':
+To overwrite the default keybindings, using following settings in `.vimrc`:
 
 ```
 let g:minimap_show='<leader>ms'
@@ -55,6 +55,11 @@ let g:minimap_update='<leader>mu'
 let g:minimap_close='<leader>gc'
 let g:minimap_toggle='<leader>gt'
 ```
+
+# Speed up with `text-minimap`
+
+`vim-minimap` supports [`text-minimap`](https://github.com/dpc/text-minimap) for
+accelerating minimap rendering. Follow `text-minimap` installation instructions.
 
 Settings
 --------

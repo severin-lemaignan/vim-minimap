@@ -20,6 +20,8 @@ import sys
 PY3 = sys.version_info[0] == 3
 
 import vim
+import subprocess
+import shutil
 
 # Add the library to the Python path.
 for p in vim.eval("&runtimepath").split(','):
@@ -162,20 +164,33 @@ def updateminimap():
             highlight_group = vim.eval("g:minimap_highlight")
             lengths = []
             indents = []
-
-            first = max(1, topline - 80)
-            last = min(bottomline + 80, len(src.buffer))
-            for line in range(first, last):
-                linestring = src.buffer[line]
-                indents.append(len(linestring) - len(linestring.lstrip()))
-                lengths.append(len(linestring))
-
             vim.command(":setlocal modifiable")
 
-            minimap.buffer[:] = draw(lengths,indents)
+            first = max(1, topline - 160)
+            last = min(bottomline + 160, len(src.buffer))
+            scale = 4
+
+            # TODO: this check could be done once at the start
+            #text_minimap_path = shutil.which("text-minimap")
+            #if text_minimap_path is None:
+            # I hate Python in the first place and can't figure why the above
+            # doesn't work, while it should, so I've put a `False` there instead
+            # and called it a day. Please put me out of my misery.
+            if False:
+                for line in range(first, last):
+                    linestring = src.buffer[line]
+                    indents.append(len(linestring) - len(linestring.lstrip()))
+                    lengths.append(len(linestring))
+
+                minimap.buffer[:] = draw(lengths,indents)
+            else:
+                proc = subprocess.Popen(["text-minimap", "--xscale", "2", "--yscale", "2"], stdout=subprocess.PIPE, stdin=subprocess.PIPE)
+                minimap.buffer[:] = proc.communicate(input="\n".join(src.buffer[first:last]).encode())[0].decode("utf-8").split("\n")
+                scale = 8
+
             # Highlight the current visible zone
-            top = int((topline - first) / 4)
-            bottom = int((bottomline -first)/ 4 + 1)
+            top = int((topline - first) / scale)
+            bottom = int((bottomline - first)/ scale + 2)
             vim.command("match {0} /\\%>0v\\%<{1}v\\%>{2}l\\%<{3}l./".format(
                 highlight_group, WIDTH + 1, top, bottom))
 

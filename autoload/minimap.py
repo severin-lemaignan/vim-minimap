@@ -184,13 +184,13 @@ def updateminimap():
 
                 minimap.buffer[:] = draw(lengths,indents)
             else:
-                proc = subprocess.Popen(["text-minimap", "--xscale", "2", "--yscale", "2"], stdout=subprocess.PIPE, stdin=subprocess.PIPE)
-                minimap.buffer[:] = proc.communicate(input="\n".join(src.buffer[first:last]).encode())[0].decode("utf-8").split("\n")
+                proc = subprocess.Popen(["text-minimap", "--xscale", "4", "--yscale", "2"], stdout=subprocess.PIPE, stdin=subprocess.PIPE)
+                minimap.buffer[:] = proc.communicate(input="\n".join(src.buffer[first-1:last]).encode())[0].decode("utf-8").split("\n")
                 scale = 8
 
             # Highlight the current visible zone
             top = int((topline - first) / scale)
-            bottom = int((bottomline - first)/ scale + 2)
+            bottom = int((bottomline - first + (scale - 1))/ scale + 1)
             vim.command("match {0} /\\%>0v\\%<{1}v\\%>{2}l\\%<{3}l./".format(
                 highlight_group, WIDTH + 1, top, bottom))
 

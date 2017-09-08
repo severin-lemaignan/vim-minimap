@@ -20,7 +20,6 @@ import os
 from sys import version_info
 from collections import defaultdict
 from time import sleep
-import curses
 
 IS_PY3 = version_info[0] == 3
 
@@ -395,6 +394,7 @@ def animate(canvas, fn, delay=1./24, *args, **kwargs):
     :param delay: Float. Delay between frames.
     :param *args, **kwargs: optional fn parameters
     """
+    import curses
 
     # python2 unicode curses fix
     if not IS_PY3:

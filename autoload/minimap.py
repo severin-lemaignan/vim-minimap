@@ -67,7 +67,6 @@ def toggleminimap():
         showminimap()
 
 def showminimap():
-    
     minimap = getmmwindow()
 
     # If the minimap window does not yet exist, create it
@@ -163,8 +162,16 @@ def updateminimap():
             lengths = []
             indents = []
 
-            first = max(1, topline - 80)
-            last = min(bottomline + 80, len(src.buffer))
+            bufferlen = len(src.buffer)
+            more_on_top = 0
+            more_on_bottom = 0
+            if bufferlen > 160 + bottomline - topline:
+                if topline < 80:
+                    more_on_bottom = 80 - topline
+                if bottomline + 80 > bufferlen:
+                    more_on_top = bottomline + 80 - bufferlen
+            first = max(topline - 80 - more_on_top, 1)
+            last = min(bottomline + 80 + more_on_bottom, bufferlen)
             for line in range(first, last):
                 linestring = src.buffer[line]
                 indents.append(len(linestring) - len(linestring.lstrip()))

@@ -20,6 +20,7 @@ import sys
 PY3 = sys.version_info[0] == 3
 
 import vim
+import time
 
 # Add the library to the Python path.
 for p in vim.eval("&runtimepath").split(','):
@@ -96,6 +97,10 @@ def showminimap():
     vim.command(":call minimap#UpdateMinimap()")
 
 def updateminimap():
+    if time.time() - updateminimap.lastUpdate <= updateminimap.refresh_ms:
+        return
+    updateminimap.lastUpdate = time.time()
+
     minimap = getmmwindow()
     src = vim.current.window
 
@@ -170,19 +175,20 @@ def updateminimap():
                     more_on_bottom = 80 - topline
                 if bottomline + 80 > bufferlen:
                     more_on_top = bottomline + 80 - bufferlen
-            first = max(topline - 80 - more_on_top, 1)
-            last = min(bottomline + 80 + more_on_bottom, bufferlen)
+            first = max(topline - 160 - more_on_top, 1)
+            last = min(bottomline + 160 + more_on_bottom, bufferlen)
             for line in range(first, last):
                 linestring = src.buffer[line]
                 indents.append(len(linestring) - len(linestring.lstrip()))
                 lengths.append(len(linestring))
 
             vim.command(":setlocal modifiable")
+            vim.command(":let &colorcolumn=join(range(1,80),',')")
 
             minimap.buffer[:] = draw(lengths,indents)
             # Highlight the current visible zone
             top = int((topline - first) / 4)
-            bottom = int((bottomline -first)/ 4 + 1)
+            bottom = int((bottomline - first) / 4 + 1)
             vim.command("match {0} /\\%>0v\\%<{1}v\\%>{2}l\\%<{3}l./".format(
                 highlight_group, WIDTH + 1, top, bottom))
 
@@ -205,6 +211,8 @@ def updateminimap():
                 vim.command("normal! gv")
 
             src.cursor = cursor
+updateminimap.lastUpdate = 0
+updateminimap.refresh_ms = float(vim.eval("g:minimap_refresh_ms"))/1000
 
 def closeminimap():
     minimap = getmmwindow()

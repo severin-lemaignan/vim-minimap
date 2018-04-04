@@ -19,6 +19,10 @@ if has('python') || has('python3')
     if !exists('g:minimap_highlight')
         let g:minimap_highlight = 'Visual'
     endif
+    if !exists('g:minimap_refresh_ms')
+        let g:minimap_refresh_ms = 100
+    endif
+
 
     let python_module = fnameescape(globpath(&runtimepath, 'autoload/minimap.py'))
     if has('python')

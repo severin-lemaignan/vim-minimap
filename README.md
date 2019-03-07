@@ -40,6 +40,10 @@ cd ~/.janus
 git clone https://github.com/severin-lemaignan/vim-minimap.git vim-minimap
 ```
 
+### AUR
+
+AUR just has [vim-minimap-git](https://aur.archlinux.org/packages/vim-minimap-git/) package.
+
 Usage
 -----
 

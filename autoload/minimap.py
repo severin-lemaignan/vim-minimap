@@ -74,7 +74,7 @@ def showminimap():
         # Save the currently active window to restore it later
         src = vim.current.window
 
-        vim.command(":botright vnew %s" % MINIMAP)
+        vim.command(":rightb vnew %s" % MINIMAP)
         # make the new buffer 'temporary'
         vim.command(":setlocal buftype=nofile bufhidden=wipe noswapfile nobuflisted")
         # make ensure our buffer is uncluttered

@@ -56,7 +56,7 @@ To overwrite the default keybindings, using following settings in ``.vimrc'':
 ```
 let g:minimap_show='<leader>ms'
 let g:minimap_update='<leader>mu'
-let g:minimap_close='<leader>gc'
+let g:minimap_close='<leader>mc'
 let g:minimap_toggle='<leader>gt'
 ```
 

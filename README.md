@@ -47,17 +47,18 @@ AUR just has [vim-minimap-git](https://aur.archlinux.org/packages/vim-minimap-gi
 Usage
 -----
 
-`:Minimap` to show the minimap, `:MinimapClose` to hide it.
+`:MinimapToggle` toggles the minimap, which should be all that you need.
+`:Minimap` to show, and `:MinimapClose` to hide it.
+`:MinimapUpdate` updates the minimap.
 
-Default mappings: `<Leader>mm` to display the minimap, `<Leader>mc` to close it.
+vim-minimap is a good little plugin so it doesn't define mappings.
+Example mappings for you to add to ``.vimrc'':
 
-To overwrite the default keybindings, using following settings in ``.vimrc'':
-
-```
-let g:minimap_show='<leader>ms'
-let g:minimap_update='<leader>mu'
-let g:minimap_close='<leader>gc'
-let g:minimap_toggle='<leader>gt'
+```vim
+map <Leader>mm :MinimapToggle<CR>
+map <Leader>ms :Minimap<CR>
+map <Leader>mu :MinimapUpdate<CR>
+map <Leader>mc :MinimapClose<CR>
 ```
 
 Settings
